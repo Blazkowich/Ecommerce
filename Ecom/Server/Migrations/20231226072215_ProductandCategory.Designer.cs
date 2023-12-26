@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecom.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231226022626_ProductSeeding")]
-    partial class ProductSeeding
+    [Migration("20231226072215_ProductandCategory")]
+    partial class ProductandCategory
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,47 @@ namespace Ecom.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Ecom.Shared.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Chocolate",
+                            Url = "Chocolate"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Candy",
+                            Url = "Candy"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Cream",
+                            Url = "Cream"
+                        });
+                });
+
             modelBuilder.Entity("Ecom.Shared.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -30,6 +71,9 @@ namespace Ecom.Server.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -48,12 +92,15 @@ namespace Ecom.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Products");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
+                            CategoryId = 1,
                             Description = "Sweet tooth: For those who enjoy sweet delicacies so much that they cannot make themselves stop until a whole table of chocolate is gone, this is a must try!",
                             ImageUrl = "https://m.media-amazon.com/images/W/MEDIAX_792452-T2/images/I/51BgFiH0PlL._SL1031_.jpg",
                             Price = 16.99m,
@@ -62,6 +109,7 @@ namespace Ecom.Server.Migrations
                         new
                         {
                             Id = 2,
+                            CategoryId = 1,
                             Description = "Premium Gourmet Assorted Hazelnut Milk Chocolate, Dark Chocolate And Coconut Chocolates, Luxury Chocolate Holiday Gift Box",
                             ImageUrl = "https://m.media-amazon.com/images/W/MEDIAX_792452-T2/images/I/918H0O3KDNL._SL1500_.jpg",
                             Price = 37.99m,
@@ -70,11 +118,23 @@ namespace Ecom.Server.Migrations
                         new
                         {
                             Id = 3,
+                            CategoryId = 1,
                             Description = "Kinder Bueno is a crispy, creamy, and delicious chocolate bar an unexpected combination of tastes and textures",
                             ImageUrl = "https://m.media-amazon.com/images/W/MEDIAX_792452-T2/images/I/61g32E3y7dL._SL1500_.jpg",
                             Price = 3.49m,
                             Title = "Kinder Bueno"
                         });
+                });
+
+            modelBuilder.Entity("Ecom.Shared.Product", b =>
+                {
+                    b.HasOne("Ecom.Shared.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }
