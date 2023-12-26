@@ -19,5 +19,20 @@ namespace Ecom.Server.Controllers
             var categories = await _categoryService.GetCategoriesAsync();
             return Ok(categories);
         }
+
+        [HttpGet("GetCategoryByUrlId/{categoryUrl}")]
+        public async Task<ActionResult> GetCategoryByUrlId(string categoryUrl)
+        {
+            var categoryId = await _categoryService.GetCategoryByUrlId(categoryUrl);
+
+            if (categoryId != 0)
+            {
+                return Ok(categoryId);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }

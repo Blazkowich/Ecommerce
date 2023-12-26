@@ -22,7 +22,7 @@ namespace Ecom.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("productId")]
+        [HttpGet("details/{productId}")]
         public async Task<ActionResult<ServiceResponse<Product>>> GetProduct(int productId)
         {
             var result = await _product.GetProductAsync(productId);

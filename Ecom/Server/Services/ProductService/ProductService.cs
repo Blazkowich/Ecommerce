@@ -39,14 +39,26 @@ namespace Ecom.Server.Services.ProductService
 
         public async Task<ServiceResponse<List<Product>>> GetProductsByCategory(string categoryUrl)
         {
-            var response = new ServiceResponse<List<Product>>
+            var response = new ServiceResponse<List<Product>>();
+
+            var category = await _dataContext.Categories
+                .FirstOrDefaultAsync(c => c.Url.ToLower() == categoryUrl.ToLower());
+
+            if (category != null)
             {
-                Data = await _dataContext.Products
-                    .Where(p => p.Category.Url.ToLower() == categoryUrl.ToLower())
-                    .ToListAsync()
-            };
+                response.Data = await _dataContext.Products
+                    .Include(p => p.Category)
+                    .Where(p => p.CategoryId == category.Id)
+                    .ToListAsync();
+            }
+            else
+            {
+                response.Message = "Category not found.";
+                // You might want to set an appropriate status or handle the missing category differently.
+            }
 
             return response;
         }
+
     }
 }

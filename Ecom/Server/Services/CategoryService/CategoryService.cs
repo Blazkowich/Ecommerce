@@ -20,9 +20,12 @@ namespace Ecom.Server.Services.CategoryService
             };
         }
 
-        public Task<ServiceResponse<Category>> GetCategoryAsync(int categoryId)
+        public async Task<int?> GetCategoryByUrlId(string categoryUrl)
         {
-            throw new NotImplementedException();
+            var category = await _dataContext.Categories
+                .FirstOrDefaultAsync(c => c.Url.ToLower() == categoryUrl.ToLower());
+
+            return category?.Id;
         }
     }
 }

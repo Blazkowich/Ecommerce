@@ -21,5 +21,11 @@ namespace Ecom.Client.Services.CategoriesService
                 Categories = response.Data;
             }
         }
+
+        public int GetCategoryIdByUrl(string categoryUrl)
+        {
+            var category = Categories.FirstOrDefault(c => c.Url.ToLower() == categoryUrl.ToLower());
+            return category?.Id ?? 0;
+        }
     }
 }

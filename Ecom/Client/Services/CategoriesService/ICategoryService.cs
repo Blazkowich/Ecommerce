@@ -5,5 +5,7 @@
         List<Category> Categories { get; set; }
 
         Task GetCategories();
+
+        int GetCategoryIdByUrl(string categoryUrl);
     }
 }
